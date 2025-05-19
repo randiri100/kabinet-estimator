@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Estimator Kabinet</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 2rem; }
+    input[type=number] { width: 80px; margin-left: 10px; }
+    label { display: block; margin: 10px 0; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <h2>Estimator Kabinet Tembok</h2>
+  <label>Panjang (cm): <input type="number" id="panjang" value="100" /></label>
+  <label>Tinggi (cm): <input type="number" id="tinggi" value="80" /></label>
+  <label>Kedalaman (cm): <input type="number" id="dalam" value="60" /></label>
+  <br />
+  <strong>Pilih bagian yang pakai HPL:</strong><br />
+  <label><input type="checkbox" id="hpl_pintu" checked /> Pintu</label>
+  <label><input type="checkbox" id="hpl_atas" /> Atas</label>
+  <label><input type="checkbox" id="hpl_ambalan" /> Ambalan</label>
+  <br />
+  <button onclick="hitungEstimasi()">Hitung Estimasi</button>
+  <h3>Total Estimasi: <span id="total_estimasi">-</span> IDR</h3>
+
+  <script>
+    function hitungEstimasi() {
+      const p = parseFloat(document.getElementById('panjang').value);
+      const t = parseFloat(document.getElementById('tinggi').value);
+      const d = parseFloat(document.getElementById('dalam').value);
+
+      const hplPintu = document.getElementById('hpl_pintu').checked;
+      const hplAtas = document.getElementById('hpl_atas').checked;
+      const hplAmbalan = document.getElementById('hpl_ambalan').checked;
+
+      const hargaMaterial = 146000;
+      const hargaHPL = 104000;
+
+      const atas = (p / 100) * (d / 100);
+      const bawah = atas;
+      const kiri = (t / 100) * (d / 100);
+      const kanan = kiri;
+      const backpanel = (p / 100) * (t / 100);
+      const ambalan = (p - 4) / 100 * (d / 100);
+      const sabuk = 2 * ((p / 100) * 0.06);
+      const sabukBawah = (p / 100) * 0.06;
+
+      const jmlPintu = p <= 100 ? 2 : (p <= 150 ? 3 : 4);
+      const pintuLuas = jmlPintu * ((p / jmlPintu) / 100 * (t - 3) / 100);
+      const partisi = jmlPintu > 2 ? 1 * (t / 100) * (d / 100) : 0;
+
+      let total = 0;
+      total += atas * hargaMaterial + (hplAtas ? atas * hargaHPL : 0);
+      total += bawah * hargaMaterial;
+      total += kiri * hargaMaterial;
+      total += kanan * hargaMaterial;
+      total += backpanel * hargaMaterial;
+      total += ambalan * hargaMaterial + (hplAmbalan ? ambalan * hargaHPL : 0);
+      total += sabuk * hargaMaterial;
+      total += sabukBawah * hargaMaterial;
+      total += partisi * hargaMaterial;
+      total += pintuLuas * hargaMaterial + (hplPintu ? pintuLuas * hargaHPL : 0);
+
+      document.getElementById("total_estimasi").innerText = total.toLocaleString('id-ID');
+    }
+  </script>
+</body>
+</html>
